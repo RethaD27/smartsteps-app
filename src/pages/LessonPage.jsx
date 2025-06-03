@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../firebase'; // Ensure this exports Firestore as `db`
+import { db } from '../utils/firebase'; // Ensure this exports Firestore as `db`
 
 export default function LessonPage() {
   const { grade, topic } = useParams();
