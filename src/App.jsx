@@ -13,7 +13,8 @@ function App() {
         <Route path="*" element={<Navigate to="/login" />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/lesson/:grade/:topic" element={<LessonPage />} />
-        
+        <Route path="/solver" element={<SolverPage />} />
+
       </Routes>
     </Router>
   );
