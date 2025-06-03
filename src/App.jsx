@@ -14,7 +14,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/lesson/:grade/:topic" element={<LessonPage />} />
         <Route path="/solver" element={<SolverPage />} />
-
+        <Route path="/progress" element={<ProgressPage />} />
       </Routes>
     </Router>
   );

@@ -1,7 +1,29 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, getFirestore, collection, addDoc } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 import { db } from "../firebase";
+
+// Firebase instances
+const db = getFirestore();
+const auth = getAuth();
+
+// Function to save quiz progress
+const saveProgress = async (score, topic, grade) => {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  try {
+    await addDoc(collection(db, "users", user.uid, "progress"), {
+      score,
+      topic,
+      grade,
+      date: new Date(),
+    });
+  } catch (error) {
+    console.error("Error saving progress:", error);
+  }
+};
 
 export default function QuizPage() {
   const { grade, topic } = useParams();
@@ -19,20 +41,24 @@ export default function QuizPage() {
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         setQuiz(docSnap.data().questions);
+      } else {
+        console.warn("Quiz not found.");
       }
     };
     fetchQuiz();
   }, [quizId]);
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (selected === quiz[currentQ].answer) {
-      setScore(score + 1);
+      setScore(prev => prev + 1);
     }
+
     if (currentQ + 1 < quiz.length) {
-      setCurrentQ(currentQ + 1);
+      setCurrentQ(prev => prev + 1);
       setSelected(null);
     } else {
       setDone(true);
+      await saveProgress(score + (selected === quiz[currentQ].answer ? 1 : 0), topic, grade);
     }
   };
 
